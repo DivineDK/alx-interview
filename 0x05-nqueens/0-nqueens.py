@@ -22,7 +22,7 @@ def ChessBoard(n: int):
     def checkBoard(row, col, col_in_row):
         """Checks if queen can be placed without attacking other queens"""
         for r in range(row):
-            if row - r == abs(col - col_in_row[r]):
+            if col == col_in_row[r] or abs(row - r) == abs(col - col_in_row[r]):
                 return False
         return True
 
@@ -31,19 +31,14 @@ def ChessBoard(n: int):
         if row == n:
             con_result = []
             for r in range(n):
-                temp_result = []
-                for c in range(n):
-                    if c == col_in_row[r]:
-                        temp_result.append(r)
-                        temp_result.append(col_in_row[r])
-                        con_result.append(temp_result)
-                if len(con_result) == n:
-                    result.append(con_result)
-                    temp_result, con_result = [], []
+                con_result.append([r, col_in_row[r]])
+            result.append(con_result)
 
     def placeQueen(row, cols, col_in_row):
         """Places N non-attacking queens on an N * N chessboard"""
-        saveBoard(row, cols, col_in_row)
+        if row == n:
+            saveBoard(row, cols, col_in_row)
+            return
         for col in range(n):
             if cols[col] == 0 and checkBoard(row, col, col_in_row):
                 cols[col] = 1
@@ -58,13 +53,15 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
-    if sys.argv[1].isdigit() is False:
+    if not sys.argv[1].isdigit():
         print("N must be a number")
         sys.exit(1)
-    if int(sys.argv[1]) < 4:
+    N = int(sys.argv[1])
+    if N < 4:
         print("N must be at least 4")
         sys.exit(1)
 
-    nqueens = ChessBoard(int(sys.argv[1]))
+    nqueens = ChessBoard(N)
     for queens in nqueens:
         print(queens)
+
